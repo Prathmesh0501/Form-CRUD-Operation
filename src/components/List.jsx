@@ -6,6 +6,9 @@ import React, { useEffect, useState } from 'react';
 const ContactForm = () => {
     const [formData, setFormData] = useState([]);
     const [tableData, setTableData] = useState([])
+    // const [formEdit, setFormEdit] = useState([])
+    // const [updateBtn,setUpdateBtn] = useState(false)
+    // const [submitBtn,setSubmitBtn] = useState(true)
 
     const handleChange = (e) => {
         setFormData({
@@ -41,6 +44,22 @@ const ContactForm = () => {
         setTableData(data.data.data)
     }
 
+    const updateUser = async(el)=>{
+        setFormData(el)
+    }
+
+    const handleUpdate = async(e)=>{
+        e.preventDefault()
+        const data = await axios.put('http://localhost:8000/update',formData)
+        alert(data.data.message)
+        setFormData({
+            name: "",
+            email: "",
+            mobile: ""
+        })
+        getFetchData()
+    }
+
     useEffect(() => {
         getFetchData()
     }, [])
@@ -49,7 +68,7 @@ const ContactForm = () => {
         <>
             <div className="max-w-md mx-auto my-8 p-6 bg-white rounded-md shadow-md">
                 <h2 className="text-2xl font-semibold mb-4">Add User</h2>
-                <form onSubmit={handleSubmit}>
+                <form>
                     <div className="mb-4">
                         <label htmlFor="name" className="block text-sm font-medium text-gray-600">
                             Name
@@ -96,8 +115,17 @@ const ContactForm = () => {
                     <button
                         type="submit"
                         className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                        
+                        onClick={handleSubmit}
                     >
                         Submit
+                    </button>
+                    <button
+                        type="submit"
+                        className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                        onClick={handleUpdate}
+                    >
+                        update
                     </button>
                 </form>
             </div>
@@ -122,7 +150,7 @@ const ContactForm = () => {
                                         <td className="border p-2">{el.email}</td>
                                         <td className="border p-2">{el.mobile}</td>
                                         <td className='border p-2 space-x-2'>
-                                            <button className='bg-green-500 py-1 px-3 rounded-lg'>U</button>
+                                            <button className='bg-green-500 py-1 px-3 rounded-lg'onClick={()=>updateUser(el)}>U</button>
                                             <button className='bg-red-600 py-1 px-3 rounded-lg' onClick={() => deleteUser(el._id)}>D</button>
                                         </td>
                                     </tr>
